@@ -53,7 +53,6 @@
     .btn.danger{background:rgba(251,113,133,.12);color:#fecdd3;border:1px solid rgba(251,113,133,.25)}
     .btn.small{padding:8px 11px;border-radius:12px;font-size:13px}
     .input,.select{width:100%;background:rgba(255,255,255,.05);color:var(--text);border:1px solid rgba(255,255,255,.09);border-radius:14px;padding:11px 12px;outline:none}
-    .select option{background:#ffffff;color:#111827;}
     .input::placeholder{color:#7890b6}
     .chips{display:flex;gap:8px;flex-wrap:wrap}
     .chip{border:1px solid rgba(255,255,255,.08);background:var(--chip);color:var(--text);padding:9px 12px;border-radius:999px;cursor:pointer;font-weight:700;font-size:13px}
@@ -75,6 +74,9 @@
     .footer-note{color:var(--muted);font-size:13px;line-height:1.45}
     .right{margin-left:auto}
     .tag-editor{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:end;margin-top:10px}
+.tag-editor.hidden{display:none}
+.tag-list{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.tag-pill{font-size:12px;padding:5px 9px;border-radius:999px;background:rgba(255,255,255,.07);color:var(--muted)}
     .volume-box{padding:14px;border-radius:16px;background:rgba(52,211,153,.10);border:1px solid rgba(52,211,153,.20)}
     .volume-value{font-size:30px;font-weight:900;margin-top:4px}
   </style>
@@ -268,10 +270,10 @@
   };
 
   const KEYS = {
-    library:"wt_library_v4",
-    plan:"wt_plan_v4",
-    history:"wt_history_v4",
-    draft:"wt_draft_v4"
+    library:"wt_library_v5",
+    plan:"wt_plan_v5",
+    history:"wt_history_v5",
+    draft:"wt_draft_v5"
   };
 
   const $ = s => document.querySelector(s);
@@ -514,15 +516,25 @@
         <div class="day-title">
           <div>
             <strong>${item.name}</strong>
-            <div class="muted tiny">${item.muscles.join(", ") || "No muscle groups assigned"}</div>
+            <div class="tag-list">
+              ${item.muscles.length
+                ? item.muscles.map(m=>`<span class="tag-pill">${m}</span>`).join("")
+                : `<span class="muted tiny">No muscle groups assigned</span>`}
+            </div>
           </div>
-          <button class="btn secondary small" data-add-lib="${item.name}">Add to today</button>
+          <div class="row">
+            <button class="btn secondary small" data-add-lib="${item.name}">Add to today</button>
+            <button class="btn secondary small" data-edit-library="${idx}">Edit</button>
+          </div>
         </div>
-        <div class="tag-editor">
+        <div class="tag-editor hidden" data-editor="${idx}">
           <select class="select" multiple size="4" data-edit-tags="${idx}">
             ${MUSCLES.map(m=>`<option value="${m}" ${item.muscles.includes(m)?"selected":""}>${m}</option>`).join("")}
           </select>
-          <button class="btn secondary small" data-save-tags="${idx}">Save tags</button>
+          <div class="row">
+            <button class="btn small" data-save-tags="${idx}">Save</button>
+            <button class="btn secondary small" data-cancel-tags="${idx}">Cancel</button>
+          </div>
         </div>
       </div>`;
     }).join("") || `<div class="notice">No exercises found.</div>`;
@@ -620,6 +632,22 @@
     if(del){
       history=history.filter(x=>x.id!==del.dataset.deleteWorkout);
       render(); return;
+    }
+
+    const editLibrary=e.target.closest("[data-edit-library]");
+    if(editLibrary){
+      const idx=Number(editLibrary.dataset.editLibrary);
+      const editor=document.querySelector(`[data-editor="${idx}"]`);
+      if(editor) editor.classList.remove("hidden");
+      return;
+    }
+
+    const cancelTags=e.target.closest("[data-cancel-tags]");
+    if(cancelTags){
+      const idx=Number(cancelTags.dataset.cancelTags);
+      const editor=document.querySelector(`[data-editor="${idx}"]`);
+      if(editor) editor.classList.add("hidden");
+      return;
     }
 
     const saveTags=e.target.closest("[data-save-tags]");

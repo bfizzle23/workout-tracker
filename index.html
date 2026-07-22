@@ -10,17 +10,15 @@
   <link rel="manifest" href="manifest.json" />
   <style>
     :root{
-      --bg:#08111f; --panel:#0f172a; --panel2:#111c31; --line:#24324f;
-      --text:#e8eefc; --muted:#9bb0d0; --accent:#7dd3fc; --good:#34d399;
-      --danger:#fb7185; --chip:#18253f; --shadow:0 18px 45px rgba(0,0,0,.28);
-      --radius:20px;
+      --bg:#08111f; --panel:#0f172a; --text:#e8eefc; --muted:#9bb0d0;
+      --accent:#7dd3fc; --good:#34d399; --danger:#fb7185; --chip:#18253f;
+      --shadow:0 18px 45px rgba(0,0,0,.28); --radius:20px;
     }
     *{box-sizing:border-box}
-    html,body{height:100%}
     body{
-      margin:0;
+      margin:0; min-height:100vh;
       font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
-      background:radial-gradient(circle at top, #16243e 0%, var(--bg) 48%) fixed;
+      background:radial-gradient(circle at top,#16243e 0%,var(--bg) 48%) fixed;
       color:var(--text);
     }
     .wrap{max-width:1200px;margin:0 auto;padding:18px 16px 32px}
@@ -28,89 +26,56 @@
     .brand{display:flex;gap:14px;align-items:center}
     .logo{
       width:54px;height:54px;border-radius:16px;background:linear-gradient(135deg,var(--accent),var(--good));
-      box-shadow:var(--shadow);display:grid;place-items:center;color:#07111f;font-weight:900;font-size:24px;flex:0 0 auto;
+      display:grid;place-items:center;color:#07111f;font-weight:900;font-size:24px;box-shadow:var(--shadow)
     }
-    h1{margin:0;font-size:28px;line-height:1.1}
-    .sub{margin-top:6px;color:var(--muted);font-size:14px;max-width:720px}
+    h1,h2,h3{margin:0}
+    .sub{margin-top:6px;color:var(--muted);font-size:14px}
     .stats{display:flex;gap:10px;flex-wrap:wrap}
-    .stat{
-      background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);
-      border-radius:18px;padding:12px 14px;min-width:120px;box-shadow:var(--shadow)
-    }
+    .stat{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:18px;padding:12px 14px;min-width:120px}
     .stat .label{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em}
     .stat .value{font-size:24px;font-weight:800;margin-top:4px}
-    .tabs{
-      display:flex;gap:8px;background:rgba(255,255,255,.04);padding:8px;border-radius:18px;
-      border:1px solid rgba(255,255,255,.08);margin-bottom:16px;overflow:auto;-webkit-overflow-scrolling:touch
-    }
-    .tab{
-      border:0;background:transparent;color:var(--muted);padding:10px 14px;border-radius:14px;cursor:pointer;
-      white-space:nowrap;font-weight:800
-    }
+    .tabs{display:flex;gap:8px;background:rgba(255,255,255,.04);padding:8px;border-radius:18px;border:1px solid rgba(255,255,255,.08);margin-bottom:16px;overflow:auto}
+    .tab{border:0;background:transparent;color:var(--muted);padding:10px 14px;border-radius:14px;cursor:pointer;white-space:nowrap;font-weight:800}
     .tab.active{background:rgba(255,255,255,.1);color:var(--text)}
     .grid{display:grid;gap:16px}
     .grid.two{grid-template-columns:1.35fr .95fr}
     .grid.three{grid-template-columns:repeat(3,1fr)}
-    @media (max-width: 980px){.grid.two,.grid.three{grid-template-columns:1fr}}
-    .card{
-      background:rgba(15,23,42,.86);backdrop-filter: blur(12px);
-      border:1px solid rgba(255,255,255,.08);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden
-    }
-    .card .head{
-      padding:16px 16px 0 16px;display:flex;align-items:flex-start;justify-content:space-between;gap:10px;flex-wrap:wrap
-    }
+    @media(max-width:980px){.grid.two,.grid.three{grid-template-columns:1fr}}
+    .card{background:rgba(15,23,42,.88);border:1px solid rgba(255,255,255,.08);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden}
+    .card .head{padding:16px 16px 0;display:flex;align-items:flex-start;justify-content:space-between;gap:10px;flex-wrap:wrap}
     .card .body{padding:16px}
     .muted{color:var(--muted)}
     .tiny{font-size:12px}
     .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
     .spaced{justify-content:space-between}
-    .btn{
-      border:0;border-radius:14px;padding:11px 14px;font-weight:800;cursor:pointer;
-      background:linear-gradient(135deg,var(--accent),#93c5fd);color:#06111f
-    }
+    .btn{border:0;border-radius:14px;padding:11px 14px;font-weight:800;cursor:pointer;background:linear-gradient(135deg,var(--accent),#93c5fd);color:#06111f}
     .btn.secondary{background:rgba(255,255,255,.08);color:var(--text);border:1px solid rgba(255,255,255,.08)}
     .btn.danger{background:rgba(251,113,133,.12);color:#fecdd3;border:1px solid rgba(251,113,133,.25)}
     .btn.small{padding:8px 11px;border-radius:12px;font-size:13px}
-    .input,.select,.textarea{
-      width:100%;background:rgba(255,255,255,.05);color:var(--text);
-      border:1px solid rgba(255,255,255,.09);border-radius:14px;padding:11px 12px;outline:none
-    }
-    .textarea{min-height:88px;resize:vertical}
-    .input::placeholder,.textarea::placeholder{color:#7890b6}
+    .input,.select{width:100%;background:rgba(255,255,255,.05);color:var(--text);border:1px solid rgba(255,255,255,.09);border-radius:14px;padding:11px 12px;outline:none}
+    .input::placeholder{color:#7890b6}
     .chips{display:flex;gap:8px;flex-wrap:wrap}
-    .chip{
-      border:1px solid rgba(255,255,255,.08);background:var(--chip);color:var(--text);
-      padding:9px 12px;border-radius:999px;cursor:pointer;font-weight:700;font-size:13px
-    }
+    .chip{border:1px solid rgba(255,255,255,.08);background:var(--chip);color:var(--text);padding:9px 12px;border-radius:999px;cursor:pointer;font-weight:700;font-size:13px}
     .chip.active{background:rgba(125,211,252,.18);border-color:rgba(125,211,252,.28)}
     .chip.good{background:rgba(52,211,153,.14);border-color:rgba(52,211,153,.25)}
-    .day-card{border:1px solid rgba(255,255,255,.08);border-radius:18px;padding:14px;background:rgba(255,255,255,.03)}
-    .day-title{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px}
+    .day-card,.exercise-card,.history-item{border:1px solid rgba(255,255,255,.08);border-radius:18px;padding:14px;background:rgba(255,255,255,.03);margin-bottom:12px}
+    .day-title,.exercise-top,.history-head{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
     .tag{font-size:12px;padding:5px 9px;border-radius:999px;background:rgba(255,255,255,.07);color:var(--muted)}
-    .exercise-card{
-      border:1px solid rgba(255,255,255,.08);border-radius:18px;padding:14px;background:rgba(255,255,255,.03);
-      margin-bottom:12px
-    }
-    .exercise-top{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}
     .exercise-name{font-size:16px;font-weight:900}
     .last{font-size:12px;color:var(--muted);margin-top:4px}
-    .sets{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:12px}
-    @media (max-width: 700px){.sets{grid-template-columns:repeat(2,1fr)}}
+    .sets{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:12px}
+    @media(max-width:700px){.sets{grid-template-columns:repeat(2,1fr)}}
     .setbox{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:10px}
     .setlabel{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px}
     .setgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-    .history-item{
-      border:1px solid rgba(255,255,255,.08);border-radius:18px;padding:14px;background:rgba(255,255,255,.03);margin-bottom:12px
-    }
-    .history-head{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}
     .history-ex{margin-top:10px;border-top:1px solid rgba(255,255,255,.08);padding-top:10px}
     .divider{height:1px;background:rgba(255,255,255,.08);margin:14px 0}
-    .notice{
-      padding:12px 14px;border-radius:16px;background:rgba(125,211,252,.08);
-      border:1px solid rgba(125,211,252,.16);color:#d8f3ff
-    }
+    .notice{padding:12px 14px;border-radius:16px;background:rgba(125,211,252,.08);border:1px solid rgba(125,211,252,.16);color:#d8f3ff}
     .footer-note{color:var(--muted);font-size:13px;line-height:1.45}
     .right{margin-left:auto}
+    .tag-editor{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:end;margin-top:10px}
+    .volume-box{padding:14px;border-radius:16px;background:rgba(52,211,153,.10);border:1px solid rgba(52,211,153,.20)}
+    .volume-value{font-size:30px;font-weight:900;margin-top:4px}
   </style>
 </head>
 <body>
@@ -120,7 +85,7 @@
         <div class="logo">W</div>
         <div>
           <h1>Workout Tracker</h1>
-          <div class="sub">Fitbod-style tracker. Save your workouts, keep your history, and use it on your phone as an installed app.</div>
+          <div class="sub">Log workouts, remember your last weight and reps, and track total training volume.</div>
         </div>
       </div>
       <div class="stats">
@@ -138,13 +103,13 @@
       <button class="tab" data-view="backup">Backup</button>
     </div>
 
-    <div id="view-today" class="view">
+    <section id="view-today" class="view">
       <div class="grid two">
         <div class="card">
           <div class="head">
             <div>
               <h2>Today's Workout</h2>
-              <div class="muted tiny">Pick a day, choose muscles, load exercises from your plan, and enter only the weight and reps.</div>
+              <div class="muted tiny">Load a planned workout, then enter weight and reps.</div>
             </div>
             <div class="row">
               <button class="btn secondary small" id="btnLoadPlan">Load from plan</button>
@@ -153,34 +118,23 @@
           </div>
           <div class="body">
             <div class="grid three">
-              <div>
-                <div class="tiny muted">Day</div>
-                <select id="todayDay" class="select"></select>
-              </div>
-              <div>
-                <div class="tiny muted">Workout date</div>
-                <input id="todayDate" class="input" type="date" />
-              </div>
-              <div>
-                <div class="tiny muted">Session name</div>
-                <input id="sessionName" class="input" />
-              </div>
+              <div><div class="tiny muted">Day</div><select id="todayDay" class="select"></select></div>
+              <div><div class="tiny muted">Workout date</div><input id="todayDate" class="input" type="date"></div>
+              <div><div class="tiny muted">Session name</div><input id="sessionName" class="input"></div>
             </div>
 
             <div class="divider"></div>
-
             <div class="tiny muted" style="margin-bottom:8px">Muscle groups</div>
             <div class="chips" id="todayMuscleChips"></div>
 
             <div class="divider"></div>
-
             <div class="row spaced">
               <div>
                 <div class="tiny muted">Recommended exercises</div>
-                <div class="footer-note">Tap one to add it to today's workout.</div>
+                <div class="footer-note">Tap an exercise to add it.</div>
               </div>
               <div class="row">
-                <input id="customExercise" class="input" placeholder="Add custom exercise" style="min-width:240px" />
+                <input id="customExercise" class="input" placeholder="Add custom exercise" style="min-width:240px">
                 <button class="btn secondary small" id="btnAddCustom">Add</button>
               </div>
             </div>
@@ -192,70 +146,50 @@
         </div>
 
         <div class="card">
-          <div class="head">
-            <div>
-              <h2>Quick snapshot</h2>
-              <div class="muted tiny">What today's session is built from.</div>
-            </div>
-          </div>
+          <div class="head"><div><h2>Quick snapshot</h2><div class="muted tiny">Today's setup and running volume.</div></div></div>
           <div class="body">
-            <div class="notice" id="snapshotBox">Choose your day and muscle groups to see recommendations.</div>
+            <div class="volume-box">
+              <div class="tiny muted">Current workout volume</div>
+              <div class="volume-value" id="currentVolume">0</div>
+              <div class="tiny muted">weight × reps across all logged sets</div>
+            </div>
+            <div class="divider"></div>
+            <div class="notice" id="snapshotBox"></div>
             <div class="divider"></div>
             <div class="tiny muted">Workout plan preview</div>
             <div id="previewPlan" style="margin-top:10px"></div>
           </div>
         </div>
       </div>
-    </div>
+    </section>
 
-    <div id="view-plan" class="view" style="display:none">
+    <section id="view-plan" class="view" style="display:none">
       <div class="card">
         <div class="head">
-          <div>
-            <h2>Weekly Plan</h2>
-            <div class="muted tiny">This is the split the app uses when you tap “Load from plan.”</div>
-          </div>
+          <div><h2>Weekly Plan</h2><div class="muted tiny">Use dropdowns for muscle groups and exercises.</div></div>
           <button class="btn small" id="btnResetPlan">Reset sample plan</button>
         </div>
         <div class="body" id="planEditor"></div>
       </div>
-    </div>
+    </section>
 
-    <div id="view-history" class="view" style="display:none">
+    <section id="view-history" class="view" style="display:none">
       <div class="card">
-        <div class="head">
-          <div>
-            <h2>Workout History</h2>
-            <div class="muted tiny">Everything you save stays here on this device.</div>
-          </div>
-        </div>
+        <div class="head"><div><h2>Workout History</h2><div class="muted tiny">Saved workouts with total volume.</div></div></div>
         <div class="body" id="historyList"></div>
       </div>
-    </div>
+    </section>
 
-    <div id="view-library" class="view" style="display:none">
+    <section id="view-library" class="view" style="display:none">
       <div class="card">
-        <div class="head">
-          <div>
-            <h2>Exercise Library</h2>
-            <div class="muted tiny">Search and filter your exercises by muscle group.</div>
-          </div>
-        </div>
+        <div class="head"><div><h2>Exercise Library</h2><div class="muted tiny">Search, filter, add, and edit muscle-group tags.</div></div></div>
         <div class="body">
           <div class="grid three">
-            <div>
-              <div class="tiny muted">Search</div>
-              <input id="libSearch" class="input" placeholder="Search exercise" />
-            </div>
-            <div>
-              <div class="tiny muted">Filter muscle group</div>
-              <select id="libFilter" class="select">
-                <option value="">All muscle groups</option>
-              </select>
-            </div>
+            <div><div class="tiny muted">Search</div><input id="libSearch" class="input" placeholder="Search exercise"></div>
+            <div><div class="tiny muted">Filter muscle group</div><select id="libFilter" class="select"></select></div>
             <div>
               <div class="tiny muted">Add exercise</div>
-              <input id="newExerciseName" class="input" placeholder="New exercise" />
+              <input id="newExerciseName" class="input" placeholder="New exercise">
               <div class="tiny muted" style="margin-top:8px">Muscle groups</div>
               <select id="newExerciseMuscles" class="select" multiple size="5"></select>
               <button class="btn secondary small" id="btnAddExercise" style="margin-top:8px">Add exercise</button>
@@ -265,304 +199,332 @@
           <div id="libraryList"></div>
         </div>
       </div>
-    </div>
+    </section>
 
-    <div id="view-backup" class="view" style="display:none">
+    <section id="view-backup" class="view" style="display:none">
       <div class="card">
-        <div class="head">
-          <div>
-            <h2>Backup & Restore</h2>
-            <div class="muted tiny">Use this to move the tracker to a new phone or protect your data.</div>
-          </div>
-        </div>
+        <div class="head"><div><h2>Backup & Restore</h2><div class="muted tiny">Protect your workout data.</div></div></div>
         <div class="body">
-          <div class="row" style="margin-bottom:12px">
+          <div class="row">
             <button class="btn" id="btnDownloadBackup">Download backup</button>
-            <label class="btn secondary" style="display:inline-flex;align-items:center;gap:8px;cursor:pointer">
+            <label class="btn secondary" style="cursor:pointer">
               Import backup
-              <input id="restoreFile" type="file" accept="application/json" style="display:none" />
+              <input id="restoreFile" type="file" accept="application/json" style="display:none">
             </label>
             <button class="btn danger right" id="btnWipeAll">Clear all data</button>
           </div>
-          <div class="notice">
-            Best way to use this on your phone: host this folder on GitHub Pages or Netlify, then open the URL on your phone and add it to your home screen.
-          </div>
-          <p class="footer-note">
-            Your workouts are stored in browser storage on the device. If you clear browser data, reinstall, or switch devices, use backup and restore.
-          </p>
         </div>
       </div>
-    </div>
+    </section>
   </div>
 
+  <datalist id="exerciseOptions"></datalist>
+
 <script>
-  const DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
+  const DAYS = ["Monday","Tuesday","Wednesday","Thursday","Friday"];
   const MUSCLES = ["Chest","Back","Shoulders","Biceps","Triceps","Quadriceps","Hamstrings","Glutes","Lower Back","Abs"];
 
   const LIBRARY_SEED = [
-    ["Dumbbell Bench Press", ["Chest","Triceps","Shoulders"]],
-    ["Dumbbell Fly", ["Chest"]],
-    ["Dumbbell Incline Bench Press", ["Chest","Triceps","Shoulders"]],
-    ["Dumbbell Incline Fly", ["Chest"]],
-    ["Low Cable Chest Fly", ["Chest"]],
-    ["Cable Crossover Fly", ["Chest"]],
-    ["Machine Fly", ["Chest"]],
-    ["Machine Bench Press", ["Chest","Triceps","Shoulders"]],
-    ["Chest Dip", ["Chest","Triceps","Shoulders"]],
-    ["Hammerstrength Incline Chest Press", ["Chest","Triceps","Shoulders"]],
-    ["Smith Machine Bench Press", ["Chest","Triceps","Shoulders"]],
-    ["Hammerstrength Decline Chest Press", ["Chest","Triceps","Shoulders"]],
-    ["Hammerstrength Chest Press", ["Chest","Triceps","Shoulders"]],
-    ["Mid Cable Crossover Fly", ["Chest"]],
-    ["Single Arm Cable Crossover", ["Chest"]],
-    ["Single Arm Low Cable Crossover Fly", ["Chest"]],
-    ["Lat Pulldown", ["Back","Biceps"]],
-    ["Seated Cable Row", ["Back","Biceps"]],
-    ["Barbell Curl", ["Biceps"]],
-    ["Incline Dumbbell Curl", ["Biceps"]],
-    ["Triceps Pushdown", ["Triceps"]],
-    ["Overhead Triceps Extension", ["Triceps"]],
-    ["Shoulder Press", ["Shoulders","Triceps"]],
-    ["Lateral Raise", ["Shoulders"]],
-    ["Leg Press", ["Quadriceps","Glutes"]],
-    ["Leg Extension", ["Quadriceps"]],
-    ["Seated Leg Curl", ["Hamstrings"]],
-    ["Romanian Deadlift", ["Hamstrings","Glutes","Lower Back"]],
-    ["Hip Thrust", ["Glutes","Hamstrings"]],
-    ["Plank", ["Abs","Lower Back"]],
-    ["Crunch", ["Abs"]],
+    ["Dumbbell Bench Press",["Chest","Triceps","Shoulders"]],
+    ["Dumbbell Fly",["Chest"]],
+    ["Dumbbell Incline Bench Press",["Chest","Triceps","Shoulders"]],
+    ["Dumbbell Incline Fly",["Chest"]],
+    ["Low Cable Chest Fly",["Chest"]],
+    ["Cable Crossover Fly",["Chest"]],
+    ["Machine Fly",["Chest"]],
+    ["Machine Bench Press",["Chest","Triceps","Shoulders"]],
+    ["Chest Dip",["Chest","Triceps","Shoulders"]],
+    ["Hammerstrength Incline Chest Press",["Chest","Triceps","Shoulders"]],
+    ["Smith Machine Bench Press",["Chest","Triceps","Shoulders"]],
+    ["Hammerstrength Decline Chest Press",["Chest","Triceps","Shoulders"]],
+    ["Hammerstrength Chest Press",["Chest","Triceps","Shoulders"]],
+    ["Mid Cable Crossover Fly",["Chest"]],
+    ["Single Arm Cable Crossover",["Chest"]],
+    ["Single Arm Low Cable Crossover Fly",["Chest"]],
+    ["Lat Pulldown",["Back","Biceps"]],
+    ["Seated Cable Row",["Back","Biceps"]],
+    ["Barbell Curl",["Biceps"]],
+    ["Incline Dumbbell Curl",["Biceps"]],
+    ["Triceps Pushdown",["Triceps"]],
+    ["Overhead Triceps Extension",["Triceps"]],
+    ["Shoulder Press",["Shoulders","Triceps"]],
+    ["Lateral Raise",["Shoulders"]],
+    ["Leg Press",["Quadriceps","Glutes"]],
+    ["Leg Extension",["Quadriceps"]],
+    ["Seated Leg Curl",["Hamstrings"]],
+    ["Romanian Deadlift",["Hamstrings","Glutes","Lower Back"]],
+    ["Hip Thrust",["Glutes","Hamstrings"]],
+    ["Plank",["Abs","Lower Back"]],
+    ["Crunch",["Abs"]]
   ];
 
   const SAMPLE_PLAN = {
-    Monday: { muscles: ["Chest", "Triceps"], exercises: ["Dumbbell Bench Press", "Dumbbell Incline Bench Press", "Cable Crossover Fly"] },
-    Tuesday: { muscles: ["Back", "Biceps"], exercises: ["Lat Pulldown", "Seated Cable Row", "Barbell Curl"] },
-    Wednesday: { muscles: ["Quadriceps", "Hamstrings"], exercises: ["Leg Press", "Romanian Deadlift", "Leg Extension", "Seated Leg Curl"] },
-    Thursday: { muscles: ["Shoulders", "Abs"], exercises: ["Shoulder Press", "Lateral Raise", "Plank"] },
-    Friday: { muscles: ["Chest", "Back"], exercises: ["Machine Bench Press", "Chest Dip", "Seated Cable Row"] },
+    Monday:{muscles:["Chest","Triceps"],exercises:["Dumbbell Bench Press","Dumbbell Incline Bench Press","Cable Crossover Fly"]},
+    Tuesday:{muscles:["Back","Biceps"],exercises:["Lat Pulldown","Seated Cable Row","Barbell Curl"]},
+    Wednesday:{muscles:["Quadriceps","Hamstrings"],exercises:["Leg Press","Romanian Deadlift","Leg Extension","Seated Leg Curl"]},
+    Thursday:{muscles:["Shoulders","Abs"],exercises:["Shoulder Press","Lateral Raise","Plank"]},
+    Friday:{muscles:["Chest","Back"],exercises:["Machine Bench Press","Chest Dip","Seated Cable Row"]}
   };
 
-  const LS_KEYS = {
-    library: "wt_pwa_library_v1",
-    plan: "wt_pwa_plan_v1",
-    history: "wt_pwa_history_v1",
-    draft: "wt_pwa_draft_v1"
+  const KEYS = {
+    library:"wt_library_v4",
+    plan:"wt_plan_v4",
+    history:"wt_history_v4",
+    draft:"wt_draft_v4"
   };
 
-  const $ = (sel) => document.querySelector(sel);
-  const clone = (x) => JSON.parse(JSON.stringify(x));
-  const load = (key, fallback) => {
-    try { const raw = localStorage.getItem(key); return raw ? JSON.parse(raw) : clone(fallback); }
-    catch { return clone(fallback); }
-  };
-  const save = (key, value) => localStorage.setItem(key, JSON.stringify(value));
+  const $ = s => document.querySelector(s);
+  const clone = x => JSON.parse(JSON.stringify(x));
+  const load = (k,f) => { try { const v=localStorage.getItem(k); return v?JSON.parse(v):clone(f); } catch { return clone(f); } };
+  const save = (k,v) => localStorage.setItem(k,JSON.stringify(v));
 
-  let library = load(LS_KEYS.library, LIBRARY_SEED.map(([name, muscles]) => ({ name, muscles })));
-  let plan = load(LS_KEYS.plan, SAMPLE_PLAN);
-  let history = load(LS_KEYS.history, []);
-  let draft = load(LS_KEYS.draft, null);
+  let library = load(KEYS.library, LIBRARY_SEED.map(([name,muscles])=>({name,muscles})));
+  let plan = load(KEYS.plan,SAMPLE_PLAN);
+  let history = load(KEYS.history,[]);
+  let draft = load(KEYS.draft,null);
+
+  library = library.map(item => ({
+    name:String(item.name || "").trim(),
+    muscles:Array.isArray(item.muscles) ? item.muscles.filter(Boolean) : []
+  })).filter(item => item.name);
 
   function makeRow(name){
     return {
-      id: crypto.randomUUID(),
+      id:crypto.randomUUID(),
       name,
-      sets: Array.from({length:4}, () => ({ weight:"", reps:"" })),
-      notes: ""
+      sets:Array.from({length:3},()=>({weight:"",reps:""})),
+      notes:""
     };
   }
 
   if(!draft){
-    const today = new Date();
-    const day = DAYS[(today.getDay() + 6) % 7] || "Monday";
-    const p = plan[day] || { muscles:["Chest","Triceps"], exercises:[] };
+    const now = new Date();
+    const day = DAYS[(now.getDay()+6)%7] || "Monday";
+    const p = plan[day] || {muscles:["Chest"],exercises:[]};
     draft = {
-      date: today.toISOString().slice(0,10),
+      date:now.toISOString().slice(0,10),
       day,
-      muscles: [...p.muscles],
-      sessionName: `${day} (${p.muscles.join(", ")})`,
-      exercises: (p.exercises || []).map(makeRow)
+      muscles:[...(p.muscles||[])],
+      sessionName:`${day} (${(p.muscles||[]).join(", ")})`,
+      exercises:(p.exercises||[]).filter(Boolean).map(makeRow)
     };
-    save(LS_KEYS.draft, draft);
+  }
+
+  // Convert older 4-set drafts to keep data but default new exercises to 3.
+  draft.exercises = (draft.exercises || []).map(ex => ({
+    ...ex,
+    id:ex.id || crypto.randomUUID(),
+    sets:Array.isArray(ex.sets) && ex.sets.length ? ex.sets : Array.from({length:3},()=>({weight:"",reps:""}))
+  }));
+
+  function syncAll(){
+    save(KEYS.library,library);
+    save(KEYS.plan,plan);
+    save(KEYS.history,history);
+    save(KEYS.draft,draft);
+  }
+
+  function getSelectedValues(select){
+    return [...select.selectedOptions].map(o=>o.value);
+  }
+
+  function setVolume(ex){
+    return ex.sets.reduce((sum,s) => {
+      const w = parseFloat(s.weight);
+      const r = parseFloat(s.reps);
+      return sum + (Number.isFinite(w) && Number.isFinite(r) ? w*r : 0);
+    }, 0);
+  }
+
+  function workoutVolume(workout){
+    return (workout.exercises || []).reduce((sum,ex)=>sum+setVolume(ex),0);
+  }
+
+  function fmtVolume(n){
+    return Number.isInteger(n) ? n.toLocaleString() : n.toLocaleString(undefined,{maximumFractionDigits:1});
   }
 
   function lastSavedForExercise(name){
-    for(let i = history.length - 1; i >= 0; i--){
-      const workout = history[i];
-      for(const ex of workout.exercises){
-        if(ex.name === name){
-          const filled = ex.sets.filter(s => s.weight || s.reps);
-          const last = filled[filled.length - 1];
-          return { date: workout.date, weight: last?.weight || "", reps: last?.reps || "" };
-        }
+    for(const workout of history){
+      const ex = workout.exercises.find(e=>e.name===name);
+      if(ex){
+        const filled = ex.sets.filter(s=>s.weight || s.reps);
+        const last = filled.at(-1);
+        return {date:workout.date,weight:last?.weight||"",reps:last?.reps||""};
       }
     }
     return null;
   }
 
-  function recalcStats(){
+  function renderOptions(){
+    $("#exerciseOptions").innerHTML = library.map(x=>`<option value="${x.name}"></option>`).join("");
+    $("#libFilter").innerHTML =
+      `<option value="">All muscle groups</option>` +
+      MUSCLES.map(m=>`<option value="${m}">${m}</option>`).join("");
+    $("#newExerciseMuscles").innerHTML =
+      MUSCLES.map(m=>`<option value="${m}">${m}</option>`).join("");
+  }
+
+  function renderStats(){
     $("#statWorkouts").textContent = history.length;
-    const setCount = history.reduce((sum, w) => sum + w.exercises.reduce((s, ex) => s + ex.sets.filter(x => x.weight || x.reps).length, 0), 0);
-    $("#statSets").textContent = setCount;
+    $("#statSets").textContent = history.reduce((sum,w)=>sum+w.exercises.reduce((s,e)=>s+e.sets.filter(x=>x.weight||x.reps).length,0),0);
     $("#statLast").textContent = history[0]?.date || "—";
   }
 
-  function renderOptions(){
-    const exerciseOptions = $("#exerciseOptions");
-    if(exerciseOptions){
-      exerciseOptions.innerHTML = library.map(item => `<option value="${item.name}"></option>`).join("");
-    }
-
-    $("#libFilter").innerHTML =
-      `<option value="">All muscle groups</option>` +
-      MUSCLES.map(m => `<option value="${m}">${m}</option>`).join("");
-
-    $("#newExerciseMuscles").innerHTML =
-      MUSCLES.map(m => `<option value="${m}">${m}</option>`).join("");
-  }
-
   function renderToday(){
-    $("#todayDay").innerHTML = DAYS.map(d => `<option ${draft.day===d?'selected':''}>${d}</option>`).join("");
+    $("#todayDay").innerHTML = DAYS.map(d=>`<option ${draft.day===d?"selected":""}>${d}</option>`).join("");
     $("#todayDate").value = draft.date;
     $("#sessionName").value = draft.sessionName;
 
-    $("#todayMuscleChips").innerHTML = MUSCLES.map(m => `
-      <button class="chip ${draft.muscles.includes(m) ? "active" : ""}" data-muscle="${m}">${m}</button>
-    `).join("");
+    $("#todayMuscleChips").innerHTML = MUSCLES.map(m=>
+      `<button class="chip ${draft.muscles.includes(m)?"active":""}" data-muscle="${m}">${m}</button>`
+    ).join("");
 
     const target = new Set(draft.muscles);
-    const recommended = library.filter(x => x.muscles.some(m => target.has(m))).slice(0, 10);
-    $("#recommendedChips").innerHTML = recommended.map(x => `<button class="chip good" data-add="${x.name}">+ ${x.name}</button>`).join("");
+    $("#recommendedChips").innerHTML = library
+      .filter(x=>x.muscles.some(m=>target.has(m)))
+      .slice(0,12)
+      .map(x=>`<button class="chip good" data-add="${x.name}">+ ${x.name}</button>`)
+      .join("");
 
-    $("#snapshotBox").innerHTML = `<strong>${draft.day}</strong> · ${draft.muscles.join(", ")}<br>${draft.exercises.length} exercise slot(s) loaded`;
+    $("#currentVolume").textContent = fmtVolume(workoutVolume(draft));
+    $("#snapshotBox").innerHTML =
+      `<strong>${draft.day}</strong> · ${draft.muscles.join(", ") || "No muscle groups"}<br>${draft.exercises.length} exercise(s) loaded`;
 
-    const p = plan[draft.day] || { muscles: [], exercises: [] };
+    const p = plan[draft.day] || {muscles:[],exercises:[]};
     $("#previewPlan").innerHTML = `
       <div class="day-card">
-        <div class="day-title">
-          <div><strong>${draft.day}</strong></div>
-          <span class="tag">${(p.muscles || []).join(", ") || "No muscle groups set"}</span>
-        </div>
-        <div class="chips">${(p.exercises || []).map(x => `<span class="chip">${x}</span>`).join("") || '<span class="muted tiny">Add exercises in the Plan tab.</span>'}</div>
+        <div class="day-title"><strong>${draft.day}</strong><span class="tag">${(p.muscles||[]).join(", ")}</span></div>
+        <div class="chips">${(p.exercises||[]).filter(Boolean).map(x=>`<span class="chip">${x}</span>`).join("")}</div>
       </div>`;
 
-    const wrap = $("#todayExercises");
-    wrap.innerHTML = "";
-    draft.exercises.forEach((ex) => {
+    $("#todayExercises").innerHTML = draft.exercises.map(ex=>{
       const last = lastSavedForExercise(ex.name);
-      const box = document.createElement("div");
-      box.className = "exercise-card";
-      box.innerHTML = `
-        <div class="exercise-top">
-          <div class="flex-1">
-            <div class="exercise-name">${ex.name || "Blank exercise slot"}</div>
-            <div class="last">${last ? `Last time: ${last.weight || "—"} x ${last.reps || "—"} on ${last.date}` : "No previous log yet"}</div>
+      return `
+        <div class="exercise-card">
+          <div class="exercise-top">
+            <div>
+              <div class="exercise-name">${ex.name}</div>
+              <div class="last">${last?`Last time: ${last.weight||"—"} x ${last.reps||"—"} on ${last.date}`:"No previous log yet"}</div>
+              <div class="last">Exercise volume: ${fmtVolume(setVolume(ex))}</div>
+            </div>
+            <button class="btn danger small" data-remove="${ex.id}">Remove exercise</button>
           </div>
-          <button class="btn danger small" data-remove="${ex.id}">Remove</button>
-        </div>
-        <div class="sets">
-          ${ex.sets.map((set, idx) => `
-            <div class="setbox">
-              <div class="setlabel">Set ${idx+1}</div>
-              <div class="setgrid">
-                <input class="input" inputmode="decimal" placeholder="Wt" value="${set.weight}" data-ex="${ex.id}" data-set="${idx}" data-field="weight">
-                <input class="input" inputmode="numeric" placeholder="Reps" value="${set.reps}" data-ex="${ex.id}" data-set="${idx}" data-field="reps">
-              </div>
-            </div>`).join("")}
-        </div>
-        <div style="margin-top:10px">
-          <input class="input" placeholder="Notes..." value="${ex.notes || ""}" data-notes="${ex.id}">
+          <div class="sets">
+            ${ex.sets.map((set,i)=>`
+              <div class="setbox">
+                <div class="row spaced">
+                  <div class="setlabel">Set ${i+1}</div>
+                  ${ex.sets.length>1?`<button class="btn danger small" data-remove-set="${ex.id}" data-set-index="${i}">−</button>`:""}
+                </div>
+                <div class="setgrid">
+                  <input class="input" inputmode="decimal" placeholder="Wt" value="${set.weight}" data-ex="${ex.id}" data-set="${i}" data-field="weight">
+                  <input class="input" inputmode="numeric" placeholder="Reps" value="${set.reps}" data-ex="${ex.id}" data-set="${i}" data-field="reps">
+                </div>
+              </div>`).join("")}
+          </div>
+          <div class="row spaced" style="margin-top:10px">
+            <input class="input" style="flex:1" placeholder="Notes..." value="${ex.notes||""}" data-notes="${ex.id}">
+            <button class="btn secondary small" data-add-set="${ex.id}">+ Add set</button>
+          </div>
         </div>`;
-      wrap.appendChild(box);
-    });
+    }).join("");
+  }
+
+  function muscleSelectHTML(selected, day, slot){
+    return `<select class="select" data-plan-muscle="${day}" data-slot="${slot}">
+      <option value="">Select muscle group</option>
+      ${MUSCLES.map(m=>`<option value="${m}" ${selected===m?"selected":""}>${m}</option>`).join("")}
+    </select>`;
+  }
+
+  function exerciseSelectHTML(selected, day, idx){
+    return `<select class="select" data-plan-ex="${day}" data-idx="${idx}">
+      <option value="">Select exercise</option>
+      ${library.map(e=>`<option value="${e.name}" ${selected===e.name?"selected":""}>${e.name}</option>`).join("")}
+    </select>`;
   }
 
   function renderPlan(){
-    const editor = $("#planEditor");
-    editor.innerHTML = "";
-    DAYS.forEach(day => {
-      const row = document.createElement("div");
-      row.className = "day-card";
-      row.style.marginBottom = "12px";
-      const mus = plan[day]?.muscles || [];
-      const exs = plan[day]?.exercises || [];
-      row.innerHTML = `
-        <div class="day-title">
-          <div><strong>${day}</strong></div>
-          <span class="tag">${mus.join(", ") || "No muscle groups"}</span>
-        </div>
-        <div class="grid three">
-          <div>
-            <div class="tiny muted">Muscle groups (comma separated)</div>
-            <input class="input" data-plan-muscles="${day}" value="${mus.join(", ")}" placeholder="Chest, Triceps">
-          </div>
-          <div class="grid" style="grid-template-columns:1fr">
-            <div class="tiny muted">Exercise 1</div>
-            <input class="input" list="exerciseOptions" data-plan-ex="${day}" data-idx="0" value="${exs[0] || ""}">
-            <div class="tiny muted">Exercise 2</div>
-            <input class="input" list="exerciseOptions" data-plan-ex="${day}" data-idx="1" value="${exs[1] || ""}">
-            <div class="tiny muted">Exercise 3</div>
-            <input class="input" list="exerciseOptions" data-plan-ex="${day}" data-idx="2" value="${exs[2] || ""}">
-          </div>
-          <div class="grid" style="grid-template-columns:1fr">
-            <div class="tiny muted">Exercise 4</div>
-            <input class="input" list="exerciseOptions" data-plan-ex="${day}" data-idx="3" value="${exs[3] || ""}">
-            <div class="tiny muted">Exercise 5</div>
-            <input class="input" list="exerciseOptions" data-plan-ex="${day}" data-idx="4" value="${exs[4] || ""}">
-            <div class="tiny muted">Exercise 6</div>
-            <input class="input" list="exerciseOptions" data-plan-ex="${day}" data-idx="5" value="${exs[5] || ""}">
+    $("#planEditor").innerHTML = DAYS.map(day=>{
+      const p = plan[day] || {muscles:[],exercises:[]};
+      const ex = p.exercises || [];
+      return `
+        <div class="day-card">
+          <div class="day-title"><strong>${day}</strong><span class="tag">${(p.muscles||[]).join(", ")}</span></div>
+          <div class="grid three">
+            <div>
+              <div class="tiny muted">Primary muscle group</div>
+              ${muscleSelectHTML((p.muscles||[])[0]||"",day,0)}
+              <div class="tiny muted" style="margin-top:8px">Secondary muscle group</div>
+              ${muscleSelectHTML((p.muscles||[])[1]||"",day,1)}
+            </div>
+            <div>
+              ${[0,1,2].map(i=>`
+                <div class="tiny muted" style="margin-top:${i?8:0}px">Exercise ${i+1}</div>
+                ${exerciseSelectHTML(ex[i]||"",day,i)}`).join("")}
+            </div>
+            <div>
+              ${[3,4,5].map(i=>`
+                <div class="tiny muted" style="margin-top:${i>3?8:0}px">Exercise ${i+1}</div>
+                ${exerciseSelectHTML(ex[i]||"",day,i)}`).join("")}
+            </div>
           </div>
         </div>`;
-      editor.appendChild(row);
-    });
+    }).join("");
   }
 
   function renderHistory(){
-    const list = $("#historyList");
-    if(history.length === 0){
-      list.innerHTML = `<div class="notice">No workouts saved yet.</div>`;
+    if(!history.length){
+      $("#historyList").innerHTML = `<div class="notice">No workouts saved yet.</div>`;
       return;
     }
-    list.innerHTML = "";
-    history.forEach(workout => {
-      const card = document.createElement("div");
-      card.className = "history-item";
-      card.innerHTML = `
+    $("#historyList").innerHTML = history.map(w=>`
+      <div class="history-item">
         <div class="history-head">
           <div>
-            <div style="font-weight:900">${workout.sessionName}</div>
-            <div class="muted tiny">${workout.date} · ${workout.day} · ${workout.muscles.join(", ")}</div>
+            <strong>${w.sessionName}</strong>
+            <div class="muted tiny">${w.date} · ${w.day} · ${w.muscles.join(", ")}</div>
+            <div class="muted tiny">Total volume: ${fmtVolume(workoutVolume(w))}</div>
           </div>
-          <button class="btn danger small" data-delete-workout="${workout.id}">Delete</button>
+          <button class="btn danger small" data-delete-workout="${w.id}">Delete</button>
         </div>
-        ${workout.exercises.map(ex => `
+        ${w.exercises.map(ex=>`
           <div class="history-ex">
-            <div style="font-weight:800">${ex.name}</div>
-            <div class="muted tiny">${ex.sets.map((s, i) => `S${i+1}: ${s.weight || "—"} x ${s.reps || "—"}`).join(" · ")}</div>
-            ${ex.notes ? `<div class="muted tiny" style="margin-top:6px">Notes: ${ex.notes}</div>` : ""}
+            <strong>${ex.name}</strong>
+            <div class="muted tiny">${ex.sets.map((s,i)=>`S${i+1}: ${s.weight||"—"} x ${s.reps||"—"}`).join(" · ")}</div>
+            <div class="muted tiny">Exercise volume: ${fmtVolume(setVolume(ex))}</div>
           </div>`).join("")}
-      `;
-      list.appendChild(card);
-    });
+      </div>`).join("");
   }
 
   function renderLibrary(){
-    const search = ($("#libSearch").value || "").trim().toLowerCase();
+    const q = ($("#libSearch").value||"").trim().toLowerCase();
     const filter = $("#libFilter").value;
-    const list = $("#libraryList");
-    const filtered = library.filter(item => {
-      const matchesSearch = !search || item.name.toLowerCase().includes(search);
-      const matchesFilter = !filter || item.muscles.includes(filter);
-      return matchesSearch && matchesFilter;
-    });
-    list.innerHTML = filtered.map(item => `
-      <div class="day-card" style="margin-bottom:10px">
+    const items = library.filter(item =>
+      (!q || item.name.toLowerCase().includes(q)) &&
+      (!filter || item.muscles.includes(filter))
+    );
+
+    $("#libraryList").innerHTML = items.map(item=>{
+      const idx = library.findIndex(x=>x.name===item.name);
+      return `
+      <div class="day-card">
         <div class="day-title">
           <div>
             <strong>${item.name}</strong>
-            <div class="muted tiny">${item.muscles.join(", ") || "No muscle group tags yet"}</div>
+            <div class="muted tiny">${item.muscles.join(", ") || "No muscle groups assigned"}</div>
           </div>
           <button class="btn secondary small" data-add-lib="${item.name}">Add to today</button>
         </div>
-      </div>`).join("") || `<div class="notice">No exercises found.</div>`;
+        <div class="tag-editor">
+          <select class="select" multiple size="4" data-edit-tags="${idx}">
+            ${MUSCLES.map(m=>`<option value="${m}" ${item.muscles.includes(m)?"selected":""}>${m}</option>`).join("")}
+          </select>
+          <button class="btn secondary small" data-save-tags="${idx}">Save tags</button>
+        </div>
+      </div>`;
+    }).join("") || `<div class="notice">No exercises found.</div>`;
   }
 
   function render(){
@@ -571,239 +533,201 @@
     renderPlan();
     renderHistory();
     renderLibrary();
-    recalcStats();
-    save(LS_KEYS.library, library);
-    save(LS_KEYS.plan, plan);
-    save(LS_KEYS.history, history);
-    save(LS_KEYS.draft, draft);
+    renderStats();
+    syncAll();
   }
 
-  function syncDraft(){
-    draft.sessionName = $("#sessionName").value.trim() || `${draft.day} (${draft.muscles.join(", ")})`;
-    save(LS_KEYS.draft, draft);
-  }
-
-  function loadPlanIntoDraft(){
-    const p = plan[draft.day] || { muscles: [], exercises: [] };
-    draft.muscles = [...(p.muscles || [])];
-    draft.exercises = (p.exercises || []).filter(Boolean).map(makeRow);
-    draft.sessionName = `${draft.day} (${draft.muscles.join(", ")})`;
-    syncDraft();
-    renderToday();
-  }
-
-  function addExercise(name){
-    const clean = (name || "").trim();
+  function addExerciseToToday(name){
+    const clean = String(name||"").trim();
     if(!clean) return;
     draft.exercises.push(makeRow(clean));
-    syncDraft();
+    syncAll();
     renderToday();
-  }
-
-  function saveWorkout(){
-    const workout = {
-      id: crypto.randomUUID(),
-      date: draft.date || new Date().toISOString().slice(0,10),
-      day: draft.day,
-      muscles: [...draft.muscles],
-      sessionName: draft.sessionName || `${draft.day} (${draft.muscles.join(", ")})`,
-      exercises: draft.exercises.filter(x => x.name).map(x => ({
-        ...x,
-        sets: x.sets.map(s => ({ weight: String(s.weight || "").trim(), reps: String(s.reps || "").trim() }))
-      }))
-    };
-    history = [workout, ...history];
-    save(LS_KEYS.history, history);
-    alert("Workout saved.");
-    render();
-  }
-
-  function deleteWorkout(id){
-    history = history.filter(x => x.id !== id);
-    render();
-  }
-
-  function resetPlan(){
-    plan = clone(SAMPLE_PLAN);
-    render();
   }
 
   function addLibraryExercise(){
-    const name = ($("#newExerciseName").value || "").trim();
-    const muscles = [...$("#newExerciseMuscles").selectedOptions].map(option => option.value);
-
+    const name = ($("#newExerciseName").value||"").trim();
+    const muscles = getSelectedValues($("#newExerciseMuscles"));
     if(!name) return alert("Enter an exercise name.");
     if(!muscles.length) return alert("Choose at least one muscle group.");
-    if(library.some(x => x.name.toLowerCase() === name.toLowerCase())){
-      return alert("That exercise already exists.");
-    }
+    if(library.some(x=>x.name.toLowerCase()===name.toLowerCase())) return alert("That exercise already exists.");
 
-    library.unshift({ name, muscles });
+    library.unshift({name,muscles});
     $("#newExerciseName").value = "";
-    [...$("#newExerciseMuscles").options].forEach(option => option.selected = false);
+    [...$("#newExerciseMuscles").options].forEach(o=>o.selected=false);
     render();
   }
 
-  function downloadBackup(){
-    const payload = { library, plan, history, draft, exportedAt: new Date().toISOString() };
-    const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
-    const a = document.createElement("a");
-    a.href = URL.createObjectURL(blob);
-    a.download = "workout-tracker-backup.json";
+  function saveWorkout(){
+    if(!draft.exercises.length) return alert("Add at least one exercise.");
+    history.unshift({
+      id:crypto.randomUUID(),
+      date:draft.date,
+      day:draft.day,
+      muscles:[...draft.muscles],
+      sessionName:draft.sessionName || `${draft.day} (${draft.muscles.join(", ")})`,
+      exercises:clone(draft.exercises)
+    });
+    syncAll();
+    alert(`Workout saved. Total volume: ${fmtVolume(workoutVolume(draft))}`);
+    render();
+  }
+
+  document.addEventListener("click",e=>{
+    const tab=e.target.closest(".tab");
+    if(tab){
+      document.querySelectorAll(".tab").forEach(x=>x.classList.remove("active"));
+      tab.classList.add("active");
+      document.querySelectorAll(".view").forEach(x=>x.style.display="none");
+      $("#view-"+tab.dataset.view).style.display="";
+      return;
+    }
+
+    const muscle=e.target.closest("[data-muscle]");
+    if(muscle){
+      const m=muscle.dataset.muscle;
+      draft.muscles = draft.muscles.includes(m) ? draft.muscles.filter(x=>x!==m) : [...draft.muscles,m];
+      draft.sessionName=`${draft.day} (${draft.muscles.join(", ")})`;
+      renderToday(); syncAll(); return;
+    }
+
+    const add=e.target.closest("[data-add],[data-add-lib]");
+    if(add){ addExerciseToToday(add.dataset.add || add.dataset.addLib); return; }
+
+    const remove=e.target.closest("[data-remove]");
+    if(remove){
+      draft.exercises=draft.exercises.filter(x=>x.id!==remove.dataset.remove);
+      renderToday(); syncAll(); return;
+    }
+
+    const addSet=e.target.closest("[data-add-set]");
+    if(addSet){
+      const ex=draft.exercises.find(x=>x.id===addSet.dataset.addSet);
+      if(ex) ex.sets.push({weight:"",reps:""});
+      renderToday(); syncAll(); return;
+    }
+
+    const removeSet=e.target.closest("[data-remove-set]");
+    if(removeSet){
+      const ex=draft.exercises.find(x=>x.id===removeSet.dataset.removeSet);
+      const idx=Number(removeSet.dataset.setIndex);
+      if(ex && ex.sets.length>1) ex.sets.splice(idx,1);
+      renderToday(); syncAll(); return;
+    }
+
+    const del=e.target.closest("[data-delete-workout]");
+    if(del){
+      history=history.filter(x=>x.id!==del.dataset.deleteWorkout);
+      render(); return;
+    }
+
+    const saveTags=e.target.closest("[data-save-tags]");
+    if(saveTags){
+      const idx=Number(saveTags.dataset.saveTags);
+      const select=document.querySelector(`[data-edit-tags="${idx}"]`);
+      library[idx].muscles=getSelectedValues(select);
+      render(); return;
+    }
+  });
+
+  document.addEventListener("input",e=>{
+    const el=e.target;
+
+    if(el.id==="todayDay"){
+      draft.day=el.value;
+      const p=plan[draft.day]||{muscles:[],exercises:[]};
+      draft.muscles=[...(p.muscles||[])];
+      draft.exercises=(p.exercises||[]).filter(Boolean).map(makeRow);
+      draft.sessionName=`${draft.day} (${draft.muscles.join(", ")})`;
+      renderToday(); syncAll(); return;
+    }
+
+    if(el.id==="todayDate"){ draft.date=el.value; syncAll(); return; }
+    if(el.id==="sessionName"){ draft.sessionName=el.value; syncAll(); return; }
+
+    if(el.matches("[data-ex]")){
+      const ex=draft.exercises.find(x=>x.id===el.dataset.ex);
+      if(ex) ex.sets[Number(el.dataset.set)][el.dataset.field]=el.value;
+      renderToday(); syncAll(); return;
+    }
+
+    if(el.matches("[data-notes]")){
+      const ex=draft.exercises.find(x=>x.id===el.dataset.notes);
+      if(ex) ex.notes=el.value;
+      syncAll(); return;
+    }
+
+    if(el.matches("[data-plan-muscle]")){
+      const day=el.dataset.planMuscle;
+      const slot=Number(el.dataset.slot);
+      plan[day]=plan[day]||{muscles:[],exercises:[]};
+      const arr=[...(plan[day].muscles||[])];
+      arr[slot]=el.value;
+      plan[day].muscles=arr.filter(Boolean);
+      syncAll(); renderPlan(); return;
+    }
+
+    if(el.matches("[data-plan-ex]")){
+      const day=el.dataset.planEx, idx=Number(el.dataset.idx);
+      plan[day]=plan[day]||{muscles:[],exercises:[]};
+      plan[day].exercises[idx]=el.value;
+      syncAll(); return;
+    }
+
+    if(el.id==="libSearch" || el.id==="libFilter"){ renderLibrary(); return; }
+  });
+
+  $("#btnLoadPlan").addEventListener("click",()=>{
+    const p=plan[draft.day]||{muscles:[],exercises:[]};
+    draft.muscles=[...(p.muscles||[])];
+    draft.exercises=(p.exercises||[]).filter(Boolean).map(makeRow);
+    draft.sessionName=`${draft.day} (${draft.muscles.join(", ")})`;
+    renderToday(); syncAll();
+  });
+
+  $("#btnSaveWorkout").addEventListener("click",saveWorkout);
+  $("#btnAddExercise").addEventListener("click",addLibraryExercise);
+  $("#btnAddCustom").addEventListener("click",()=>{
+    addExerciseToToday($("#customExercise").value);
+    $("#customExercise").value="";
+  });
+  $("#btnResetPlan").addEventListener("click",()=>{ plan=clone(SAMPLE_PLAN); render(); });
+
+  $("#btnDownloadBackup").addEventListener("click",()=>{
+    const blob=new Blob([JSON.stringify({library,plan,history,draft},null,2)],{type:"application/json"});
+    const a=document.createElement("a");
+    a.href=URL.createObjectURL(blob);
+    a.download="workout-tracker-backup.json";
     a.click();
     URL.revokeObjectURL(a.href);
-  }
+  });
 
-  function restoreBackup(file){
-    const reader = new FileReader();
-    reader.onload = () => {
+  $("#restoreFile").addEventListener("change",e=>{
+    const file=e.target.files[0];
+    if(!file) return;
+    const reader=new FileReader();
+    reader.onload=()=>{
       try{
-        const data = JSON.parse(reader.result);
-        if(data.library) library = data.library;
-        if(data.plan) plan = data.plan;
-        if(data.history) history = data.history;
-        if(data.draft) draft = data.draft;
+        const data=JSON.parse(reader.result);
+        if(data.library) library=data.library;
+        if(data.plan) plan=data.plan;
+        if(data.history) history=data.history;
+        if(data.draft) draft=data.draft;
         render();
         alert("Backup restored.");
-      }catch{
-        alert("Could not read that backup file.");
-      }
+      }catch{ alert("Invalid backup file."); }
     };
     reader.readAsText(file);
-  }
+  });
 
-  function wipeAll(){
-    if(!confirm("Clear all saved workouts and plan data on this device?")) return;
-    localStorage.removeItem(LS_KEYS.library);
-    localStorage.removeItem(LS_KEYS.plan);
-    localStorage.removeItem(LS_KEYS.history);
-    localStorage.removeItem(LS_KEYS.draft);
+  $("#btnWipeAll").addEventListener("click",()=>{
+    if(!confirm("Clear all app data?")) return;
+    Object.values(KEYS).forEach(k=>localStorage.removeItem(k));
     location.reload();
-  }
-
-  document.getElementById("btnLoadPlan").addEventListener("click", loadPlanIntoDraft);
-  document.getElementById("btnSaveWorkout").addEventListener("click", saveWorkout);
-  document.getElementById("btnResetPlan").addEventListener("click", resetPlan);
-  document.getElementById("btnAddExercise").addEventListener("click", addLibraryExercise);
-  document.getElementById("btnDownloadBackup").addEventListener("click", downloadBackup);
-  document.getElementById("btnWipeAll").addEventListener("click", wipeAll);
-  document.getElementById("btnAddCustom").addEventListener("click", () => {
-    const name = document.getElementById("customExercise").value.trim();
-    if(!name) return;
-    addExercise(name);
-    document.getElementById("customExercise").value = "";
-  });
-
-  document.addEventListener("click", (e) => {
-    const tab = e.target.closest(".tab");
-    if(tab){
-      document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
-      tab.classList.add("active");
-      document.querySelectorAll(".view").forEach(v => v.style.display = "none");
-      document.getElementById("view-" + tab.dataset.view).style.display = "";
-      return;
-    }
-    const muscle = e.target.closest("[data-muscle]");
-    if(muscle){
-      const m = muscle.dataset.muscle;
-      if(draft.muscles.includes(m)) draft.muscles = draft.muscles.filter(x => x !== m);
-      else draft.muscles.push(m);
-      draft.sessionName = `${draft.day} (${draft.muscles.join(", ")})`;
-      syncDraft();
-      renderToday();
-      return;
-    }
-    const add = e.target.closest("[data-add], [data-add-lib]");
-    if(add){
-      addExercise(add.dataset.add || add.dataset.addLib);
-      return;
-    }
-    const remove = e.target.closest("[data-remove]");
-    if(remove){
-      draft.exercises = draft.exercises.filter(x => x.id !== remove.dataset.remove);
-      syncDraft();
-      renderToday();
-      return;
-    }
-    const del = e.target.closest("[data-delete-workout]");
-    if(del){
-      deleteWorkout(del.dataset.deleteWorkout);
-      return;
-    }
-  });
-
-  document.addEventListener("input", (e) => {
-    const el = e.target;
-    if(el.id === "todayDay"){
-      draft.day = el.value;
-      const p = plan[draft.day] || { muscles: [], exercises: [] };
-      draft.muscles = [...(p.muscles || [])];
-      draft.exercises = (p.exercises || []).filter(Boolean).map(makeRow);
-      draft.sessionName = `${draft.day} (${draft.muscles.join(", ")})`;
-      syncDraft();
-      renderToday();
-      return;
-    }
-    if(el.id === "todayDate"){
-      draft.date = el.value;
-      syncDraft();
-      recalcStats();
-      return;
-    }
-    if(el.id === "sessionName"){
-      draft.sessionName = el.value;
-      syncDraft();
-      return;
-    }
-    const exInput = el.closest("[data-ex]");
-    if(exInput){
-      const id = exInput.dataset.ex;
-      const idx = Number(exInput.dataset.set);
-      const field = exInput.dataset.field;
-      const ex = draft.exercises.find(x => x.id === id);
-      if(ex) ex.sets[idx][field] = el.value;
-      syncDraft();
-      return;
-    }
-    const notesInput = el.closest("[data-notes]");
-    if(notesInput){
-      const ex = draft.exercises.find(x => x.id === notesInput.dataset.notes);
-      if(ex) ex.notes = el.value;
-      syncDraft();
-      return;
-    }
-    const planMuscles = el.closest("[data-plan-muscles]");
-    if(planMuscles){
-      const day = planMuscles.dataset.planMuscles;
-      const muscles = el.value.split(",").map(s => s.trim()).filter(Boolean);
-      plan[day] = plan[day] || { muscles: [], exercises: [] };
-      plan[day].muscles = muscles;
-      renderToday();
-      renderPlan();
-      return;
-    }
-    const planEx = el.closest("[data-plan-ex]");
-    if(planEx){
-      const day = planEx.dataset.planEx;
-      const idx = Number(planEx.dataset.idx);
-      plan[day] = plan[day] || { muscles: [], exercises: [] };
-      plan[day].exercises[idx] = el.value;
-      renderToday();
-      return;
-    }
-    if(el.id === "libSearch" || el.id === "libFilter"){
-      renderLibrary();
-      return;
-    }
-    if(el.id === "newExerciseName" || el.id === "customExercise") return;
-  });
-
-  document.addEventListener("change", (e) => {
-    if(e.target.id === "restoreFile" && e.target.files[0]) restoreBackup(e.target.files[0]);
   });
 
   if("serviceWorker" in navigator){
-    window.addEventListener("load", () => navigator.serviceWorker.register("./sw.js").catch(()=>{}));
+    window.addEventListener("load",()=>navigator.serviceWorker.register("./sw.js").catch(()=>{}));
   }
 
   render();

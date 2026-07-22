@@ -1,0 +1,796 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#0f172a" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <title>Workout Tracker</title>
+  <link rel="manifest" href="manifest.json" />
+  <style>
+    :root{
+      --bg:#08111f; --panel:#0f172a; --panel2:#111c31; --line:#24324f;
+      --text:#e8eefc; --muted:#9bb0d0; --accent:#7dd3fc; --good:#34d399;
+      --danger:#fb7185; --chip:#18253f; --shadow:0 18px 45px rgba(0,0,0,.28);
+      --radius:20px;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
+      background:radial-gradient(circle at top, #16243e 0%, var(--bg) 48%) fixed;
+      color:var(--text);
+    }
+    .wrap{max-width:1200px;margin:0 auto;padding:18px 16px 32px}
+    .hero{display:flex;gap:16px;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;margin-bottom:18px}
+    .brand{display:flex;gap:14px;align-items:center}
+    .logo{
+      width:54px;height:54px;border-radius:16px;background:linear-gradient(135deg,var(--accent),var(--good));
+      box-shadow:var(--shadow);display:grid;place-items:center;color:#07111f;font-weight:900;font-size:24px;flex:0 0 auto;
+    }
+    h1{margin:0;font-size:28px;line-height:1.1}
+    .sub{margin-top:6px;color:var(--muted);font-size:14px;max-width:720px}
+    .stats{display:flex;gap:10px;flex-wrap:wrap}
+    .stat{
+      background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);
+      border-radius:18px;padding:12px 14px;min-width:120px;box-shadow:var(--shadow)
+    }
+    .stat .label{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em}
+    .stat .value{font-size:24px;font-weight:800;margin-top:4px}
+    .tabs{
+      display:flex;gap:8px;background:rgba(255,255,255,.04);padding:8px;border-radius:18px;
+      border:1px solid rgba(255,255,255,.08);margin-bottom:16px;overflow:auto;-webkit-overflow-scrolling:touch
+    }
+    .tab{
+      border:0;background:transparent;color:var(--muted);padding:10px 14px;border-radius:14px;cursor:pointer;
+      white-space:nowrap;font-weight:800
+    }
+    .tab.active{background:rgba(255,255,255,.1);color:var(--text)}
+    .grid{display:grid;gap:16px}
+    .grid.two{grid-template-columns:1.35fr .95fr}
+    .grid.three{grid-template-columns:repeat(3,1fr)}
+    @media (max-width: 980px){.grid.two,.grid.three{grid-template-columns:1fr}}
+    .card{
+      background:rgba(15,23,42,.86);backdrop-filter: blur(12px);
+      border:1px solid rgba(255,255,255,.08);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden
+    }
+    .card .head{
+      padding:16px 16px 0 16px;display:flex;align-items:flex-start;justify-content:space-between;gap:10px;flex-wrap:wrap
+    }
+    .card .body{padding:16px}
+    .muted{color:var(--muted)}
+    .tiny{font-size:12px}
+    .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+    .spaced{justify-content:space-between}
+    .btn{
+      border:0;border-radius:14px;padding:11px 14px;font-weight:800;cursor:pointer;
+      background:linear-gradient(135deg,var(--accent),#93c5fd);color:#06111f
+    }
+    .btn.secondary{background:rgba(255,255,255,.08);color:var(--text);border:1px solid rgba(255,255,255,.08)}
+    .btn.danger{background:rgba(251,113,133,.12);color:#fecdd3;border:1px solid rgba(251,113,133,.25)}
+    .btn.small{padding:8px 11px;border-radius:12px;font-size:13px}
+    .input,.select,.textarea{
+      width:100%;background:rgba(255,255,255,.05);color:var(--text);
+      border:1px solid rgba(255,255,255,.09);border-radius:14px;padding:11px 12px;outline:none
+    }
+    .textarea{min-height:88px;resize:vertical}
+    .input::placeholder,.textarea::placeholder{color:#7890b6}
+    .chips{display:flex;gap:8px;flex-wrap:wrap}
+    .chip{
+      border:1px solid rgba(255,255,255,.08);background:var(--chip);color:var(--text);
+      padding:9px 12px;border-radius:999px;cursor:pointer;font-weight:700;font-size:13px
+    }
+    .chip.active{background:rgba(125,211,252,.18);border-color:rgba(125,211,252,.28)}
+    .chip.good{background:rgba(52,211,153,.14);border-color:rgba(52,211,153,.25)}
+    .day-card{border:1px solid rgba(255,255,255,.08);border-radius:18px;padding:14px;background:rgba(255,255,255,.03)}
+    .day-title{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px}
+    .tag{font-size:12px;padding:5px 9px;border-radius:999px;background:rgba(255,255,255,.07);color:var(--muted)}
+    .exercise-card{
+      border:1px solid rgba(255,255,255,.08);border-radius:18px;padding:14px;background:rgba(255,255,255,.03);
+      margin-bottom:12px
+    }
+    .exercise-top{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}
+    .exercise-name{font-size:16px;font-weight:900}
+    .last{font-size:12px;color:var(--muted);margin-top:4px}
+    .sets{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:12px}
+    @media (max-width: 700px){.sets{grid-template-columns:repeat(2,1fr)}}
+    .setbox{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:10px}
+    .setlabel{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px}
+    .setgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+    .history-item{
+      border:1px solid rgba(255,255,255,.08);border-radius:18px;padding:14px;background:rgba(255,255,255,.03);margin-bottom:12px
+    }
+    .history-head{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}
+    .history-ex{margin-top:10px;border-top:1px solid rgba(255,255,255,.08);padding-top:10px}
+    .divider{height:1px;background:rgba(255,255,255,.08);margin:14px 0}
+    .notice{
+      padding:12px 14px;border-radius:16px;background:rgba(125,211,252,.08);
+      border:1px solid rgba(125,211,252,.16);color:#d8f3ff
+    }
+    .footer-note{color:var(--muted);font-size:13px;line-height:1.45}
+    .right{margin-left:auto}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="hero">
+      <div class="brand">
+        <div class="logo">W</div>
+        <div>
+          <h1>Workout Tracker</h1>
+          <div class="sub">Fitbod-style tracker. Save your workouts, keep your history, and use it on your phone as an installed app.</div>
+        </div>
+      </div>
+      <div class="stats">
+        <div class="stat"><div class="label">Workouts</div><div class="value" id="statWorkouts">0</div></div>
+        <div class="stat"><div class="label">Logged sets</div><div class="value" id="statSets">0</div></div>
+        <div class="stat"><div class="label">Last workout</div><div class="value" id="statLast">—</div></div>
+      </div>
+    </div>
+
+    <div class="tabs">
+      <button class="tab active" data-view="today">Today</button>
+      <button class="tab" data-view="plan">Plan</button>
+      <button class="tab" data-view="history">History</button>
+      <button class="tab" data-view="library">Library</button>
+      <button class="tab" data-view="backup">Backup</button>
+    </div>
+
+    <div id="view-today" class="view">
+      <div class="grid two">
+        <div class="card">
+          <div class="head">
+            <div>
+              <h2>Today's Workout</h2>
+              <div class="muted tiny">Pick a day, choose muscles, load exercises from your plan, and enter only the weight and reps.</div>
+            </div>
+            <div class="row">
+              <button class="btn secondary small" id="btnLoadPlan">Load from plan</button>
+              <button class="btn small" id="btnSaveWorkout">Save workout</button>
+            </div>
+          </div>
+          <div class="body">
+            <div class="grid three">
+              <div>
+                <div class="tiny muted">Day</div>
+                <select id="todayDay" class="select"></select>
+              </div>
+              <div>
+                <div class="tiny muted">Workout date</div>
+                <input id="todayDate" class="input" type="date" />
+              </div>
+              <div>
+                <div class="tiny muted">Session name</div>
+                <input id="sessionName" class="input" />
+              </div>
+            </div>
+
+            <div class="divider"></div>
+
+            <div class="tiny muted" style="margin-bottom:8px">Muscle groups</div>
+            <div class="chips" id="todayMuscleChips"></div>
+
+            <div class="divider"></div>
+
+            <div class="row spaced">
+              <div>
+                <div class="tiny muted">Recommended exercises</div>
+                <div class="footer-note">Tap one to add it to today's workout.</div>
+              </div>
+              <div class="row">
+                <input id="customExercise" class="input" placeholder="Add custom exercise" style="min-width:240px" />
+                <button class="btn secondary small" id="btnAddCustom">Add</button>
+              </div>
+            </div>
+            <div class="chips" id="recommendedChips" style="margin-top:10px"></div>
+
+            <div class="divider"></div>
+            <div id="todayExercises"></div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="head">
+            <div>
+              <h2>Quick snapshot</h2>
+              <div class="muted tiny">What today's session is built from.</div>
+            </div>
+          </div>
+          <div class="body">
+            <div class="notice" id="snapshotBox">Choose your day and muscle groups to see recommendations.</div>
+            <div class="divider"></div>
+            <div class="tiny muted">Workout plan preview</div>
+            <div id="previewPlan" style="margin-top:10px"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="view-plan" class="view" style="display:none">
+      <div class="card">
+        <div class="head">
+          <div>
+            <h2>Weekly Plan</h2>
+            <div class="muted tiny">This is the split the app uses when you tap “Load from plan.”</div>
+          </div>
+          <button class="btn small" id="btnResetPlan">Reset sample plan</button>
+        </div>
+        <div class="body" id="planEditor"></div>
+      </div>
+    </div>
+
+    <div id="view-history" class="view" style="display:none">
+      <div class="card">
+        <div class="head">
+          <div>
+            <h2>Workout History</h2>
+            <div class="muted tiny">Everything you save stays here on this device.</div>
+          </div>
+        </div>
+        <div class="body" id="historyList"></div>
+      </div>
+    </div>
+
+    <div id="view-library" class="view" style="display:none">
+      <div class="card">
+        <div class="head">
+          <div>
+            <h2>Exercise Library</h2>
+            <div class="muted tiny">Search and filter your exercises by muscle group.</div>
+          </div>
+        </div>
+        <div class="body">
+          <div class="grid three">
+            <div>
+              <div class="tiny muted">Search</div>
+              <input id="libSearch" class="input" placeholder="Search exercise" />
+            </div>
+            <div>
+              <div class="tiny muted">Filter muscle group</div>
+              <select id="libFilter" class="select">
+                <option value="">All muscle groups</option>
+              </select>
+            </div>
+            <div>
+              <div class="tiny muted">Add exercise</div>
+              <div class="row">
+                <input id="newExerciseName" class="input" placeholder="New exercise" />
+                <button class="btn secondary small" id="btnAddExercise">Add</button>
+              </div>
+            </div>
+          </div>
+          <div class="divider"></div>
+          <div id="libraryList"></div>
+        </div>
+      </div>
+    </div>
+
+    <div id="view-backup" class="view" style="display:none">
+      <div class="card">
+        <div class="head">
+          <div>
+            <h2>Backup & Restore</h2>
+            <div class="muted tiny">Use this to move the tracker to a new phone or protect your data.</div>
+          </div>
+        </div>
+        <div class="body">
+          <div class="row" style="margin-bottom:12px">
+            <button class="btn" id="btnDownloadBackup">Download backup</button>
+            <label class="btn secondary" style="display:inline-flex;align-items:center;gap:8px;cursor:pointer">
+              Import backup
+              <input id="restoreFile" type="file" accept="application/json" style="display:none" />
+            </label>
+            <button class="btn danger right" id="btnWipeAll">Clear all data</button>
+          </div>
+          <div class="notice">
+            Best way to use this on your phone: host this folder on GitHub Pages or Netlify, then open the URL on your phone and add it to your home screen.
+          </div>
+          <p class="footer-note">
+            Your workouts are stored in browser storage on the device. If you clear browser data, reinstall, or switch devices, use backup and restore.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<script>
+  const DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
+  const MUSCLES = ["Chest","Back","Shoulders","Biceps","Triceps","Quadriceps","Hamstrings","Glutes","Lower Back","Abs"];
+
+  const LIBRARY_SEED = [
+    ["Dumbbell Bench Press", ["Chest","Triceps","Shoulders"]],
+    ["Dumbbell Fly", ["Chest"]],
+    ["Dumbbell Incline Bench Press", ["Chest","Triceps","Shoulders"]],
+    ["Dumbbell Incline Fly", ["Chest"]],
+    ["Low Cable Chest Fly", ["Chest"]],
+    ["Cable Crossover Fly", ["Chest"]],
+    ["Machine Fly", ["Chest"]],
+    ["Machine Bench Press", ["Chest","Triceps","Shoulders"]],
+    ["Chest Dip", ["Chest","Triceps","Shoulders"]],
+    ["Hammerstrength Incline Chest Press", ["Chest","Triceps","Shoulders"]],
+    ["Smith Machine Bench Press", ["Chest","Triceps","Shoulders"]],
+    ["Hammerstrength Decline Chest Press", ["Chest","Triceps","Shoulders"]],
+    ["Hammerstrength Chest Press", ["Chest","Triceps","Shoulders"]],
+    ["Mid Cable Crossover Fly", ["Chest"]],
+    ["Single Arm Cable Crossover", ["Chest"]],
+    ["Single Arm Low Cable Crossover Fly", ["Chest"]],
+    ["Lat Pulldown", ["Back","Biceps"]],
+    ["Seated Cable Row", ["Back","Biceps"]],
+    ["Barbell Curl", ["Biceps"]],
+    ["Incline Dumbbell Curl", ["Biceps"]],
+    ["Triceps Pushdown", ["Triceps"]],
+    ["Overhead Triceps Extension", ["Triceps"]],
+    ["Shoulder Press", ["Shoulders","Triceps"]],
+    ["Lateral Raise", ["Shoulders"]],
+    ["Leg Press", ["Quadriceps","Glutes"]],
+    ["Leg Extension", ["Quadriceps"]],
+    ["Seated Leg Curl", ["Hamstrings"]],
+    ["Romanian Deadlift", ["Hamstrings","Glutes","Lower Back"]],
+    ["Hip Thrust", ["Glutes","Hamstrings"]],
+    ["Plank", ["Abs","Lower Back"]],
+    ["Crunch", ["Abs"]],
+  ];
+
+  const SAMPLE_PLAN = {
+    Monday: { muscles: ["Chest", "Triceps"], exercises: ["Dumbbell Bench Press", "Dumbbell Incline Bench Press", "Cable Crossover Fly"] },
+    Tuesday: { muscles: ["Back", "Biceps"], exercises: ["Lat Pulldown", "Seated Cable Row", "Barbell Curl"] },
+    Wednesday: { muscles: ["Quadriceps", "Hamstrings"], exercises: ["Leg Press", "Romanian Deadlift", "Leg Extension", "Seated Leg Curl"] },
+    Thursday: { muscles: ["Shoulders", "Abs"], exercises: ["Shoulder Press", "Lateral Raise", "Plank"] },
+    Friday: { muscles: ["Chest", "Back"], exercises: ["Machine Bench Press", "Chest Dip", "Seated Cable Row"] },
+  };
+
+  const LS_KEYS = {
+    library: "wt_pwa_library_v1",
+    plan: "wt_pwa_plan_v1",
+    history: "wt_pwa_history_v1",
+    draft: "wt_pwa_draft_v1"
+  };
+
+  const $ = (sel) => document.querySelector(sel);
+  const clone = (x) => JSON.parse(JSON.stringify(x));
+  const load = (key, fallback) => {
+    try { const raw = localStorage.getItem(key); return raw ? JSON.parse(raw) : clone(fallback); }
+    catch { return clone(fallback); }
+  };
+  const save = (key, value) => localStorage.setItem(key, JSON.stringify(value));
+
+  let library = load(LS_KEYS.library, LIBRARY_SEED.map(([name, muscles]) => ({ name, muscles })));
+  let plan = load(LS_KEYS.plan, SAMPLE_PLAN);
+  let history = load(LS_KEYS.history, []);
+  let draft = load(LS_KEYS.draft, null);
+
+  function makeRow(name){
+    return {
+      id: crypto.randomUUID(),
+      name,
+      sets: Array.from({length:4}, () => ({ weight:"", reps:"" })),
+      notes: ""
+    };
+  }
+
+  if(!draft){
+    const today = new Date();
+    const day = DAYS[(today.getDay() + 6) % 7] || "Monday";
+    const p = plan[day] || { muscles:["Chest","Triceps"], exercises:[] };
+    draft = {
+      date: today.toISOString().slice(0,10),
+      day,
+      muscles: [...p.muscles],
+      sessionName: `${day} (${p.muscles.join(", ")})`,
+      exercises: (p.exercises || []).map(makeRow)
+    };
+    save(LS_KEYS.draft, draft);
+  }
+
+  function lastSavedForExercise(name){
+    for(let i = history.length - 1; i >= 0; i--){
+      const workout = history[i];
+      for(const ex of workout.exercises){
+        if(ex.name === name){
+          const filled = ex.sets.filter(s => s.weight || s.reps);
+          const last = filled[filled.length - 1];
+          return { date: workout.date, weight: last?.weight || "", reps: last?.reps || "" };
+        }
+      }
+    }
+    return null;
+  }
+
+  function recalcStats(){
+    $("#statWorkouts").textContent = history.length;
+    const setCount = history.reduce((sum, w) => sum + w.exercises.reduce((s, ex) => s + ex.sets.filter(x => x.weight || x.reps).length, 0), 0);
+    $("#statSets").textContent = setCount;
+    $("#statLast").textContent = history[0]?.date || "—";
+  }
+
+  function renderOptions(){
+    $("#exerciseOptions").innerHTML = "";
+    $("#libFilter").innerHTML = `<option value="">All muscle groups</option>` + MUSCLES.map(m => `<option value="${m}">${m}</option>`).join("");
+  }
+
+  function renderToday(){
+    $("#todayDay").innerHTML = DAYS.map(d => `<option ${draft.day===d?'selected':''}>${d}</option>`).join("");
+    $("#todayDate").value = draft.date;
+    $("#sessionName").value = draft.sessionName;
+
+    $("#todayMuscleChips").innerHTML = MUSCLES.map(m => `
+      <button class="chip ${draft.muscles.includes(m) ? "active" : ""}" data-muscle="${m}">${m}</button>
+    `).join("");
+
+    const target = new Set(draft.muscles);
+    const recommended = library.filter(x => x.muscles.some(m => target.has(m))).slice(0, 10);
+    $("#recommendedChips").innerHTML = recommended.map(x => `<button class="chip good" data-add="${x.name}">+ ${x.name}</button>`).join("");
+
+    $("#snapshotBox").innerHTML = `<strong>${draft.day}</strong> · ${draft.muscles.join(", ")}<br>${draft.exercises.length} exercise slot(s) loaded`;
+
+    const p = plan[draft.day] || { muscles: [], exercises: [] };
+    $("#previewPlan").innerHTML = `
+      <div class="day-card">
+        <div class="day-title">
+          <div><strong>${draft.day}</strong></div>
+          <span class="tag">${(p.muscles || []).join(", ") || "No muscle groups set"}</span>
+        </div>
+        <div class="chips">${(p.exercises || []).map(x => `<span class="chip">${x}</span>`).join("") || '<span class="muted tiny">Add exercises in the Plan tab.</span>'}</div>
+      </div>`;
+
+    const wrap = $("#todayExercises");
+    wrap.innerHTML = "";
+    draft.exercises.forEach((ex) => {
+      const last = lastSavedForExercise(ex.name);
+      const box = document.createElement("div");
+      box.className = "exercise-card";
+      box.innerHTML = `
+        <div class="exercise-top">
+          <div class="flex-1">
+            <div class="exercise-name">${ex.name || "Blank exercise slot"}</div>
+            <div class="last">${last ? `Last time: ${last.weight || "—"} x ${last.reps || "—"} on ${last.date}` : "No previous log yet"}</div>
+          </div>
+          <button class="btn danger small" data-remove="${ex.id}">Remove</button>
+        </div>
+        <div class="sets">
+          ${ex.sets.map((set, idx) => `
+            <div class="setbox">
+              <div class="setlabel">Set ${idx+1}</div>
+              <div class="setgrid">
+                <input class="input" inputmode="decimal" placeholder="Wt" value="${set.weight}" data-ex="${ex.id}" data-set="${idx}" data-field="weight">
+                <input class="input" inputmode="numeric" placeholder="Reps" value="${set.reps}" data-ex="${ex.id}" data-set="${idx}" data-field="reps">
+              </div>
+            </div>`).join("")}
+        </div>
+        <div style="margin-top:10px">
+          <input class="input" placeholder="Notes..." value="${ex.notes || ""}" data-notes="${ex.id}">
+        </div>`;
+      wrap.appendChild(box);
+    });
+  }
+
+  function renderPlan(){
+    const editor = $("#planEditor");
+    editor.innerHTML = "";
+    DAYS.forEach(day => {
+      const row = document.createElement("div");
+      row.className = "day-card";
+      row.style.marginBottom = "12px";
+      const mus = plan[day]?.muscles || [];
+      const exs = plan[day]?.exercises || [];
+      row.innerHTML = `
+        <div class="day-title">
+          <div><strong>${day}</strong></div>
+          <span class="tag">${mus.join(", ") || "No muscle groups"}</span>
+        </div>
+        <div class="grid three">
+          <div>
+            <div class="tiny muted">Muscle groups (comma separated)</div>
+            <input class="input" data-plan-muscles="${day}" value="${mus.join(", ")}" placeholder="Chest, Triceps">
+          </div>
+          <div class="grid" style="grid-template-columns:1fr">
+            <div class="tiny muted">Exercise 1</div>
+            <input class="input" list="exerciseOptions" data-plan-ex="${day}" data-idx="0" value="${exs[0] || ""}">
+            <div class="tiny muted">Exercise 2</div>
+            <input class="input" list="exerciseOptions" data-plan-ex="${day}" data-idx="1" value="${exs[1] || ""}">
+            <div class="tiny muted">Exercise 3</div>
+            <input class="input" list="exerciseOptions" data-plan-ex="${day}" data-idx="2" value="${exs[2] || ""}">
+          </div>
+          <div class="grid" style="grid-template-columns:1fr">
+            <div class="tiny muted">Exercise 4</div>
+            <input class="input" list="exerciseOptions" data-plan-ex="${day}" data-idx="3" value="${exs[3] || ""}">
+            <div class="tiny muted">Exercise 5</div>
+            <input class="input" list="exerciseOptions" data-plan-ex="${day}" data-idx="4" value="${exs[4] || ""}">
+            <div class="tiny muted">Exercise 6</div>
+            <input class="input" list="exerciseOptions" data-plan-ex="${day}" data-idx="5" value="${exs[5] || ""}">
+          </div>
+        </div>`;
+      editor.appendChild(row);
+    });
+  }
+
+  function renderHistory(){
+    const list = $("#historyList");
+    if(history.length === 0){
+      list.innerHTML = `<div class="notice">No workouts saved yet.</div>`;
+      return;
+    }
+    list.innerHTML = "";
+    history.forEach(workout => {
+      const card = document.createElement("div");
+      card.className = "history-item";
+      card.innerHTML = `
+        <div class="history-head">
+          <div>
+            <div style="font-weight:900">${workout.sessionName}</div>
+            <div class="muted tiny">${workout.date} · ${workout.day} · ${workout.muscles.join(", ")}</div>
+          </div>
+          <button class="btn danger small" data-delete-workout="${workout.id}">Delete</button>
+        </div>
+        ${workout.exercises.map(ex => `
+          <div class="history-ex">
+            <div style="font-weight:800">${ex.name}</div>
+            <div class="muted tiny">${ex.sets.map((s, i) => `S${i+1}: ${s.weight || "—"} x ${s.reps || "—"}`).join(" · ")}</div>
+            ${ex.notes ? `<div class="muted tiny" style="margin-top:6px">Notes: ${ex.notes}</div>` : ""}
+          </div>`).join("")}
+      `;
+      list.appendChild(card);
+    });
+  }
+
+  function renderLibrary(){
+    const search = ($("#libSearch").value || "").trim().toLowerCase();
+    const filter = $("#libFilter").value;
+    const list = $("#libraryList");
+    const filtered = library.filter(item => {
+      const matchesSearch = !search || item.name.toLowerCase().includes(search);
+      const matchesFilter = !filter || item.muscles.includes(filter);
+      return matchesSearch && matchesFilter;
+    });
+    list.innerHTML = filtered.map(item => `
+      <div class="day-card" style="margin-bottom:10px">
+        <div class="day-title">
+          <div>
+            <strong>${item.name}</strong>
+            <div class="muted tiny">${item.muscles.join(", ") || "No muscle group tags yet"}</div>
+          </div>
+          <button class="btn secondary small" data-add-lib="${item.name}">Add to today</button>
+        </div>
+      </div>`).join("") || `<div class="notice">No exercises found.</div>`;
+  }
+
+  function render(){
+    renderOptions();
+    renderToday();
+    renderPlan();
+    renderHistory();
+    renderLibrary();
+    recalcStats();
+    save(LS_KEYS.library, library);
+    save(LS_KEYS.plan, plan);
+    save(LS_KEYS.history, history);
+    save(LS_KEYS.draft, draft);
+  }
+
+  function syncDraft(){
+    draft.sessionName = $("#sessionName").value.trim() || `${draft.day} (${draft.muscles.join(", ")})`;
+    save(LS_KEYS.draft, draft);
+  }
+
+  function loadPlanIntoDraft(){
+    const p = plan[draft.day] || { muscles: [], exercises: [] };
+    draft.muscles = [...(p.muscles || [])];
+    draft.exercises = (p.exercises || []).filter(Boolean).map(makeRow);
+    draft.sessionName = `${draft.day} (${draft.muscles.join(", ")})`;
+    syncDraft();
+    renderToday();
+  }
+
+  function addExercise(name){
+    const clean = (name || "").trim();
+    if(!clean) return;
+    draft.exercises.push(makeRow(clean));
+    syncDraft();
+    renderToday();
+  }
+
+  function saveWorkout(){
+    const workout = {
+      id: crypto.randomUUID(),
+      date: draft.date || new Date().toISOString().slice(0,10),
+      day: draft.day,
+      muscles: [...draft.muscles],
+      sessionName: draft.sessionName || `${draft.day} (${draft.muscles.join(", ")})`,
+      exercises: draft.exercises.filter(x => x.name).map(x => ({
+        ...x,
+        sets: x.sets.map(s => ({ weight: String(s.weight || "").trim(), reps: String(s.reps || "").trim() }))
+      }))
+    };
+    history = [workout, ...history];
+    save(LS_KEYS.history, history);
+    alert("Workout saved.");
+    render();
+  }
+
+  function deleteWorkout(id){
+    history = history.filter(x => x.id !== id);
+    render();
+  }
+
+  function resetPlan(){
+    plan = clone(SAMPLE_PLAN);
+    render();
+  }
+
+  function addLibraryExercise(){
+    const name = ($("#newExerciseName").value || "").trim();
+    if(!name) return;
+    if(library.some(x => x.name.toLowerCase() === name.toLowerCase())) return alert("That exercise already exists.");
+    library.unshift({ name, muscles: [] });
+    $("#newExerciseName").value = "";
+    render();
+  }
+
+  function downloadBackup(){
+    const payload = { library, plan, history, draft, exportedAt: new Date().toISOString() };
+    const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = "workout-tracker-backup.json";
+    a.click();
+    URL.revokeObjectURL(a.href);
+  }
+
+  function restoreBackup(file){
+    const reader = new FileReader();
+    reader.onload = () => {
+      try{
+        const data = JSON.parse(reader.result);
+        if(data.library) library = data.library;
+        if(data.plan) plan = data.plan;
+        if(data.history) history = data.history;
+        if(data.draft) draft = data.draft;
+        render();
+        alert("Backup restored.");
+      }catch{
+        alert("Could not read that backup file.");
+      }
+    };
+    reader.readAsText(file);
+  }
+
+  function wipeAll(){
+    if(!confirm("Clear all saved workouts and plan data on this device?")) return;
+    localStorage.removeItem(LS_KEYS.library);
+    localStorage.removeItem(LS_KEYS.plan);
+    localStorage.removeItem(LS_KEYS.history);
+    localStorage.removeItem(LS_KEYS.draft);
+    location.reload();
+  }
+
+  document.getElementById("btnLoadPlan").addEventListener("click", loadPlanIntoDraft);
+  document.getElementById("btnSaveWorkout").addEventListener("click", saveWorkout);
+  document.getElementById("btnResetPlan").addEventListener("click", resetPlan);
+  document.getElementById("btnAddExercise").addEventListener("click", addLibraryExercise);
+  document.getElementById("btnDownloadBackup").addEventListener("click", downloadBackup);
+  document.getElementById("btnWipeAll").addEventListener("click", wipeAll);
+  document.getElementById("btnAddCustom").addEventListener("click", () => {
+    const name = document.getElementById("customExercise").value.trim();
+    if(!name) return;
+    addExercise(name);
+    document.getElementById("customExercise").value = "";
+  });
+
+  document.addEventListener("click", (e) => {
+    const tab = e.target.closest(".tab");
+    if(tab){
+      document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
+      tab.classList.add("active");
+      document.querySelectorAll(".view").forEach(v => v.style.display = "none");
+      document.getElementById("view-" + tab.dataset.view).style.display = "";
+      return;
+    }
+    const muscle = e.target.closest("[data-muscle]");
+    if(muscle){
+      const m = muscle.dataset.muscle;
+      if(draft.muscles.includes(m)) draft.muscles = draft.muscles.filter(x => x !== m);
+      else draft.muscles.push(m);
+      draft.sessionName = `${draft.day} (${draft.muscles.join(", ")})`;
+      syncDraft();
+      renderToday();
+      return;
+    }
+    const add = e.target.closest("[data-add], [data-add-lib]");
+    if(add){
+      addExercise(add.dataset.add || add.dataset.addLib);
+      return;
+    }
+    const remove = e.target.closest("[data-remove]");
+    if(remove){
+      draft.exercises = draft.exercises.filter(x => x.id !== remove.dataset.remove);
+      syncDraft();
+      renderToday();
+      return;
+    }
+    const del = e.target.closest("[data-delete-workout]");
+    if(del){
+      deleteWorkout(del.dataset.deleteWorkout);
+      return;
+    }
+  });
+
+  document.addEventListener("input", (e) => {
+    const el = e.target;
+    if(el.id === "todayDay"){
+      draft.day = el.value;
+      const p = plan[draft.day] || { muscles: [], exercises: [] };
+      draft.muscles = [...(p.muscles || [])];
+      draft.exercises = (p.exercises || []).filter(Boolean).map(makeRow);
+      draft.sessionName = `${draft.day} (${draft.muscles.join(", ")})`;
+      syncDraft();
+      renderToday();
+      return;
+    }
+    if(el.id === "todayDate"){
+      draft.date = el.value;
+      syncDraft();
+      recalcStats();
+      return;
+    }
+    if(el.id === "sessionName"){
+      draft.sessionName = el.value;
+      syncDraft();
+      return;
+    }
+    const exInput = el.closest("[data-ex]");
+    if(exInput){
+      const id = exInput.dataset.ex;
+      const idx = Number(exInput.dataset.set);
+      const field = exInput.dataset.field;
+      const ex = draft.exercises.find(x => x.id === id);
+      if(ex) ex.sets[idx][field] = el.value;
+      syncDraft();
+      return;
+    }
+    const notesInput = el.closest("[data-notes]");
+    if(notesInput){
+      const ex = draft.exercises.find(x => x.id === notesInput.dataset.notes);
+      if(ex) ex.notes = el.value;
+      syncDraft();
+      return;
+    }
+    const planMuscles = el.closest("[data-plan-muscles]");
+    if(planMuscles){
+      const day = planMuscles.dataset.planMuscles;
+      const muscles = el.value.split(",").map(s => s.trim()).filter(Boolean);
+      plan[day] = plan[day] || { muscles: [], exercises: [] };
+      plan[day].muscles = muscles;
+      renderToday();
+      renderPlan();
+      return;
+    }
+    const planEx = el.closest("[data-plan-ex]");
+    if(planEx){
+      const day = planEx.dataset.planEx;
+      const idx = Number(planEx.dataset.idx);
+      plan[day] = plan[day] || { muscles: [], exercises: [] };
+      plan[day].exercises[idx] = el.value;
+      renderToday();
+      return;
+    }
+    if(el.id === "libSearch" || el.id === "libFilter"){
+      renderLibrary();
+      return;
+    }
+    if(el.id === "newExerciseName" || el.id === "customExercise") return;
+  });
+
+  document.addEventListener("change", (e) => {
+    if(e.target.id === "restoreFile" && e.target.files[0]) restoreBackup(e.target.files[0]);
+  });
+
+  if("serviceWorker" in navigator){
+    window.addEventListener("load", () => navigator.serviceWorker.register("./sw.js").catch(()=>{}));
+  }
+
+  render();
+</script>
+</body>
+</html>

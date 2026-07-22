@@ -255,10 +255,10 @@
             </div>
             <div>
               <div class="tiny muted">Add exercise</div>
-              <div class="row">
-                <input id="newExerciseName" class="input" placeholder="New exercise" />
-                <button class="btn secondary small" id="btnAddExercise">Add</button>
-              </div>
+              <input id="newExerciseName" class="input" placeholder="New exercise" />
+              <div class="tiny muted" style="margin-top:8px">Muscle groups</div>
+              <select id="newExerciseMuscles" class="select" multiple size="5"></select>
+              <button class="btn secondary small" id="btnAddExercise" style="margin-top:8px">Add exercise</button>
             </div>
           </div>
           <div class="divider"></div>
@@ -406,8 +406,17 @@
   }
 
   function renderOptions(){
-    $("#exerciseOptions").innerHTML = "";
-    $("#libFilter").innerHTML = `<option value="">All muscle groups</option>` + MUSCLES.map(m => `<option value="${m}">${m}</option>`).join("");
+    const exerciseOptions = $("#exerciseOptions");
+    if(exerciseOptions){
+      exerciseOptions.innerHTML = library.map(item => `<option value="${item.name}"></option>`).join("");
+    }
+
+    $("#libFilter").innerHTML =
+      `<option value="">All muscle groups</option>` +
+      MUSCLES.map(m => `<option value="${m}">${m}</option>`).join("");
+
+    $("#newExerciseMuscles").innerHTML =
+      MUSCLES.map(m => `<option value="${m}">${m}</option>`).join("");
   }
 
   function renderToday(){
@@ -621,10 +630,17 @@
 
   function addLibraryExercise(){
     const name = ($("#newExerciseName").value || "").trim();
-    if(!name) return;
-    if(library.some(x => x.name.toLowerCase() === name.toLowerCase())) return alert("That exercise already exists.");
-    library.unshift({ name, muscles: [] });
+    const muscles = [...$("#newExerciseMuscles").selectedOptions].map(option => option.value);
+
+    if(!name) return alert("Enter an exercise name.");
+    if(!muscles.length) return alert("Choose at least one muscle group.");
+    if(library.some(x => x.name.toLowerCase() === name.toLowerCase())){
+      return alert("That exercise already exists.");
+    }
+
+    library.unshift({ name, muscles });
     $("#newExerciseName").value = "";
+    [...$("#newExerciseMuscles").options].forEach(option => option.selected = false);
     render();
   }
 
